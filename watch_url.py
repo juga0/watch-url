@@ -10,7 +10,7 @@ import logging.config
 from config import CONFIG, AMQP_CONFIG, INTERVAL, \
     TOS_CONFIG_URL, TOS_ETAG_URL, TOS_ETAG_DOC, TOS_ETAG_PART_POST_URL,\
     FETCH_URL
-from couchdb_watch import get_db_rules, get_db_etag, push_db_etag, fetch_url
+from couchdb_watch import get_db_rules, get_db_etag, put_db_etag, fetch_url
 try:
     from agents_common.etag_requests import get_etag
 except:
@@ -57,7 +57,7 @@ class WatchURLService(object):
                 # store etag in db
                 tos_etag_doc = TOS_ETAG_DOC % (rule['organization'] + '-' + rule['tool'] + '-' + rule['policy'])
                 tos_etag_post_url = TOS_ETAG_PART_POST_URL % tos_etag_doc
-                push_db_etag(tos_etag_post_url, etag, last_modified)
+                put_db_etag(tos_etag_post_url, url, etag, last_modified)
                 fetch_url(FETCH_URL % (url, etag, last_modified))
             logger.info('the page has not been modified')
 

@@ -23,8 +23,8 @@ Check https://virtualenv.pypa.io/en/latest/installation.html or if Debian equal/
     source ~/.virtualenvs/oiienv/bin/activate
 
 #### Install dependencies in virtualenv
-    git clone https://lab.openintegrity.org/openintegrity-agents/watch_url.git
-    cd watch_url
+    git clone https://lab.openintegrity.org/agents/watch-url.git
+    cd watch-url
     pip install -r requirements.txt
 
 ## Configuration
@@ -32,5 +32,7 @@ Check https://virtualenv.pypa.io/en/latest/installation.html or if Debian equal/
 TBD
 
 ## Running
-
+  cd watch_url
   nameko run watch_url
+
+TODO: move watch_url.py main to /scripts

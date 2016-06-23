@@ -53,6 +53,7 @@ def get_db_rules(doc_url):
 def get_db_etag(etag_url):
     logger.debug('etag_url %s', etag_url)
     r = requests.get(etag_url)
+    # TODO: manage conflict when status code 409
     # logger.debug('get db etag response %s', r.json())
     etag = last_modified = ''
     if r.json().get("rows"):
@@ -66,7 +67,7 @@ def get_db_etag(etag_url):
     return etag, last_modified
 
 
-def put_db_etag(url_db, url, etag, last_modified):
+def put_db_etag(url_db, url, etag='', last_modified=''):
     """{"_id":"tos-1","_rev":"2-cc47e0deb5b8efb2cf81b635c7790f03","key":"https://www.whispersystems.org/signal/privacy/","agent_id":"agent-tos-1","header":{"etag":"","last-modified":"Mon, 13 Jun 2016 19:01:36 GMT"},"content":"# Privacy Policy\n\nSignal provides end-to-end encrypted calling and messaging. We cannot decrypt\nor otherwise access the content of a call or a message.\n\n## Information We Have\n\nCertain information (e.g. a recipient's identifier, an encrypted message body,\netc.) is transmitted to us solely for the purpose of placing calls or\ntransmitting messages. Unless otherwise stated below, this information is only\nkept as long as necessary to place each call or transmit each message, and is\nnot used for any other purpose.\n\n### 1. Information we store\n\n  * The phone number or identifier you register with.\n\n  * Randomly generated authentication tokens, keys, push tokens, etc. necessary for setting up a call or transmitting a message.\n\n  * Profile information (e.g. an avatar, etc) you submit.\n\n### 2. Transient information\n\n  * IP addresses may be kept in memory for rate limiting or to prevent abuse.\n\n  * Information from the contacts on your device may be cryptographically hashed and transmitted to the server in order to [determine which of your contacts are registered](/blog/contact-discovery).\n\n## Information We May Share\n\nWe do not share your information with companies, organizations, and\nindividuals outside of OWS unless one of the following circumstances applies:\n\n  * With your consent.\n\n  * Through normal communication with a federated server operated by another entity. Some Signal users might be registered with other providers (e.g. CyanogenMOD), which requires passing messages, synchronizing views of registered users, etc.\n\n  * When legally required.\n\nWe will share the information we have with entities outside of OWS if we have\na good faith belief that access, use, preservation, or disclosure of the\ninformation is necessary to:\n\n  * meet any applicable law, regulation, legal process or enforceable governmental request.\n  * enforce applicable Terms of Service, including investigation of potential violations.\n  * detect, prevent, or otherwise address fraud, security, or technical issues.\n  * protect against harm to the rights, property, or safety of OWS, our users, or the public as required or permitted by law.\n\nWe will update this privacy policy as needed so that it is current, accurate,\nand as clear as possible.\n\n"}"""
     data = {
         "key": url,
@@ -87,7 +88,7 @@ def put_db_etag(url_db, url, etag, last_modified):
     return r.status_code
 
 
-def fetch_url(url, etag, last_modified):
+def fetch_url(url, etag='', last_modified=''):
     data = {
         "key": url,
         "agent_id": AGENT_ID,

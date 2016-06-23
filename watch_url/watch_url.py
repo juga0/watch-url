@@ -57,6 +57,7 @@ class WatchURLService(object):
                 # store etag in db
                 tos_etag_doc = TOS_ETAG_DOC % (rule['organization'] + '-' + rule['tool'] + '-' + rule['policy'])
                 tos_etag_post_url = TOS_ETAG_PART_POST_URL % tos_etag_doc
+                # TODO: manage conflict when status code 409
                 put_db_etag(tos_etag_post_url, url, etag, last_modified)
                 fetch_url(FETCH_URL % (url, etag, last_modified))
             logger.info('the page has not been modified')

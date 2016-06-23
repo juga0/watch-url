@@ -77,18 +77,28 @@ def put_db_etag(url_db, url, etag, last_modified):
         },
         "content": ""
     }
-    logger.debug('post url %s with etag %s and last-modified %s' % (url, etag, last_modified))
+    logger.debug('put url %s with etag %s and last-modified %s' % (url, etag, last_modified))
     # TODO: generate id?
     # To create new document you can either use a POST operation or a PUT operation. To create/update a named document using the PUT operation
     # To update an existing document, you also issue a PUT request. In this case, the JSON body must contain a _rev property, which lets CouchDB know which revision the edits are based on. If the revision of the document currently stored in the database doesn't match, then a 409 conflict error is returned.
     # It is recommended that you avoid POST when possible, because proxies and other network intermediaries will occasionally resend POST requests, which can result in duplicate document creation. If your client software is not capable of guaranteeing uniqueness of generated UUIDs, use a GET to /_uuids?count=100 to retrieve a list of document IDs for future PUT requests. Please note that the /_uuids-call does not check for existing document ids; collision-detection happens when you are trying to save a document.
     r = requests.put(url_db, json=data)
-    logger.debug('post request to url %s returned status %s', url_db, r.status_code)
+    logger.debug('put request to url %s returned status %s', url_db, r.status_code)
     return r.status_code
 
 
-def fetch_url(url):
-    r = requests.get(url)
+def fetch_url(url, etag, last_modified):
+    data = {
+        "key": url,
+        "agent_id": AGENT_ID,
+        "header": {
+            "etag": etag,
+            "last-modified": last_modified
+        },
+        "content": ""
+    }
+    logger.debug('put url %s with etag %s and last-modified %s' % (url, etag, last_modified))
+    r = requests.put(url, json=data)
     return r.status_code
 
 

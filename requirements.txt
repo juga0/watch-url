@@ -1,5 +1,4 @@
--e git+https://lab.openintegrity.org/openintegrity-agents/agents-common-code.git#egg=agents_common
-#-e git+https://lab.openintegrity.org/openintegrity-agents/agents-common-code.git@55dd602a376ca7189d4bee0795b16f4497c0d63b#egg=agents_common
+-e git+https://lab.openintegrity.org/agents/agents-common-code.git#egg=agents_common
 nameko==2.3.1
 ndg-httpsclient==0.4.1
 pyasn1==0.1.9

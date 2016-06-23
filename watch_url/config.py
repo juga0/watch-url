@@ -11,7 +11,7 @@ PROJECT_PATH = dirname(ROOT_PATH)
 ROOT_PROJECT_PATH = dirname(PROJECT_PATH)
 # in case agents-common-code is not installed, the path to it is requered
 AGENTS_MODULE_DIR = 'agents-common-code'
-AGENTS_MODULE_PATH = join(PROJECT_PATH, AGENTS_MODULE_DIR)
+AGENTS_MODULE_PATH = join(ROOT_PROJECT_PATH, AGENTS_MODULE_DIR)
 
 # FIXME: the ide should be generated other way
 AGENT_ID = 'agent-tos-1'
@@ -36,7 +36,7 @@ TOS_ETAG_DB = 'staging-tos'
 # TOS_ETAG_DOC = 'tos-1'
 # TOS_ETAG_POST_URL = '/'.join([COUCHDB_URL, TOS_ETAG_DB, TOS_ETAG_DOC])
 TOS_ETAG_DOC = AGENT_ID + '-%s'
-TOS_ETAG_PART_POST_URL = '/'.join([COUCHDB_URL, TOS_ETAG_DB]) + '/%s' 
+TOS_ETAG_PART_POST_URL = '/'.join([COUCHDB_URL, TOS_ETAG_DB]) + '/%s'
 
 # fetch_url configuration
 # FIXME: temporal url for development

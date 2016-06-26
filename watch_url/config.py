@@ -24,23 +24,31 @@ INTERVAL = 10
 
 # couchdb configuration and urls
 COUCHDB_URL = 'https://oii-db.iilab.org'
-TOS_CONFIG_DB = 'staging-config'
-TOS_CONFIG_DOC = 'tos'
-# TOS_CONFIG_URL = 'https://oii-db.iilab.org/staging-config/tos'
-TOS_CONFIG_URL = '/'.join([COUCHDB_URL, TOS_CONFIG_DB, TOS_CONFIG_DOC])
-TOS_ETAG_URL = """https://oii-db.iilab.org/staging-tos/_design/couchapp-tos/_view/tos?reduce=true&group_level=2&startkey=["%s"]&endkey=["%s",{}]"""
-# TOS_ETAG_POST_URL = "https://oii-db.iilab.org/staging-tos/tos-1"
+CONFIG_DB = 'staging-config'
+CONFIG_DOC = 'tos'
+# CONFIG_URL = 'https://oii-db.iilab.org/staging-config/tos'
 
-TOS_ETAG_DB = 'staging-tos'
+# COUCHDB_URL = 'https://staging-store.openintegrity.org'
+# CONFIG_DB = 'config'
+# CONFIG_DOC = 'watch-url'
+
+CONFIG_URL = '/'.join([COUCHDB_URL, CONFIG_DB, CONFIG_DOC])
+#https://staging-store.openintegrity.org/config/watch-url
+
+ETAG_URL = """https://oii-db.iilab.org/staging-tos/_design/couchapp-tos/_view/tos?reduce=true&group_level=2&startkey=["%s"]&endkey=["%s",{}]"""
+# ETAG_POST_URL = "https://oii-db.iilab.org/staging-tos/tos-1"
+
+ETAG_DB = 'staging-tos'
 # FIXME: should be this a hash of the agent and the url?
-# TOS_ETAG_DOC = 'tos-1'
-# TOS_ETAG_POST_URL = '/'.join([COUCHDB_URL, TOS_ETAG_DB, TOS_ETAG_DOC])
-TOS_ETAG_DOC = AGENT_ID + '-%s'
-TOS_ETAG_PART_POST_URL = '/'.join([COUCHDB_URL, TOS_ETAG_DB]) + '/%s'
+# ETAG_DOC = 'tos-1'
+# ETAG_POST_URL = '/'.join([COUCHDB_URL, ETAG_DB, ETAG_DOC])
+ETAG_DOC = AGENT_ID + '-%s'
+ETAG_PART_POST_URL = '/'.join([COUCHDB_URL, ETAG_DB]) + '/%s'
 
 # fetch_url configuration
 # FIXME: temporal url for development
-FETCH_URL = 'http://127.0.0.1:8000/fetchurl/%s/%s/%s'
+# FETCH_URL = 'http://127.0.0.1:8000/fetchurl/%s/%s/%s'
+FETCH_URL = 'http://127.0.0.1:8000/fetchurl'
 
 # rabbitmq configuration
 AMQP_CONFIG = {'AMQP_URI': 'amqp://guest:guest@localhost'}

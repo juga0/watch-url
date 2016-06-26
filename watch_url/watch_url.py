@@ -8,7 +8,7 @@ import logging
 import logging.config
 # from logger import LoggingDependency
 from config import CONFIG, AMQP_CONFIG, INTERVAL, \
-    TOS_CONFIG_URL, TOS_ETAG_URL, TOS_ETAG_DOC, TOS_ETAG_PART_POST_URL,\
+    CONFIG_URL, ETAG_URL, ETAG_DOC, ETAG_PART_POST_URL,\
     FETCH_URL
 from couchdb_watch import get_db_rules, get_db_etag, put_db_etag, fetch_url
 try:
@@ -33,7 +33,7 @@ class WatchURLService(object):
 
     @timer(interval=INTERVAL)
     def get_config(self):
-        rules = get_db_rules(TOS_CONFIG_URL)
+        rules = get_db_rules(CONFIG_URL)
         logger.debug(rules)
         self.watch_url(rules)
 
@@ -45,7 +45,7 @@ class WatchURLService(object):
             # get db etag
             # logger.debug('requesting etag in db for url %s', url)
             # get db etag
-            etag_db, last_modified_db = get_db_etag(TOS_ETAG_URL % (url, url))
+            etag_db, last_modified_db = get_db_etag(ETAG_URL % (url, url))
             # get page etag
             etag, last_modified = get_etag(url)
             # compare etags
@@ -55,12 +55,14 @@ class WatchURLService(object):
             if (etag_db != etag) or (last_modified_db != last_modified):
                 logger.info('the page has been modified')
                 # store etag in db
-                tos_etag_doc = TOS_ETAG_DOC % (rule['organization'] + '-' + rule['tool'] + '-' + rule['policy'])
-                tos_etag_post_url = TOS_ETAG_PART_POST_URL % tos_etag_doc
+                tos_etag_doc = ETAG_DOC % (rule['organization'] + '-' + rule['tool'] + '-' + rule['policy'])
+                tos_etag_post_url = ETAG_PART_POST_URL % tos_etag_doc
                 # TODO: manage conflict when status code 409
                 put_db_etag(tos_etag_post_url, url, etag, last_modified)
-                fetch_url(FETCH_URL % (url, etag, last_modified))
-            logger.info('the page has not been modified')
+                # fetch_url(FETCH_URL % (url, etag, last_modified))
+                fetch_url(FETCH_URL, url, etag, last_modified)
+            else:
+                logger.info('the page has not been modified')
 
 def main():
     logging.basicConfig(level=logging.DEBUG)

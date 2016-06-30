@@ -8,7 +8,7 @@ from config import INTERVAL, URLS_KEY, AGENT_TYPE, \
     URLS_CONFIG_URL, URLS_LATEST_URL, URLS_DOC_URL, \
     FETCH_URL_URL, URLS_DATA
 from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
-    fetch_url, generate_agent_id, generate_urls_data
+    fetch_url, generate_doc_id, generate_urls_data, url_path_id
 try:
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
@@ -30,6 +30,8 @@ logger = logging.getLogger(__name__)
 class WatchURLService(object):
     name ="watchurl"
 
+    # TODO: handle errors
+    # TODO: use nameko events
     @timer(interval=INTERVAL)
     def get_config(self):
         data = get_store_rules(URLS_CONFIG_URL)
@@ -60,11 +62,11 @@ class WatchURLService(object):
             # stored in the database and the content fetched
             if (etag_store != etag) or (last_modified_store != last_modified):
                 logger.info('The page has been modified.')
-                agent_id = generate_agent_id(AGENT_TYPE, url, etag,
-                                             last_modified)
+                url_path = url_path_id(etag, last_modified)
+                doc_id = generate_doc_id(AGENT_TYPE, url, url_path)
                 # store etag in store
-                etag_doc_url = URLS_DOC_URL % (agent_id)
-                urls_data_dict = generate_urls_data(URLS_DATA, AGENT_TYPE, url,
+                etag_doc_url = URLS_DOC_URL % (doc_id)
+                urls_data_dict = generate_urls_data(AGENT_TYPE, url,
                                                     etag, last_modified)
                 # TODO: manage conflict when status code 409
                 put_store_etag(etag_doc_url, urls_data_dict)
@@ -75,5 +77,7 @@ class WatchURLService(object):
                     sys.exit()
             else:
                 logger.info('The page has not been modified.')
+            # FIXME: for developing exits here
+            sys.exit()
 
 # TODO: add main

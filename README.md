@@ -34,5 +34,3 @@ TBD
 ## Running
   cd watch_url
   nameko run watch_url
-
-TODO: move watch_url.py main to /scripts

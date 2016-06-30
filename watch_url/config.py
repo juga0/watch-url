@@ -3,7 +3,6 @@
 # from urlparse import urljoin
 from os.path import join, abspath, dirname
 
-
 BASE_PATH = abspath(__file__)
 # BASE_PATH = abspath('.')
 ROOT_PATH = dirname(BASE_PATH)

@@ -1,96 +1,79 @@
 """watch_url."""
 # from nameko.rpc import rpc, RpcProxy
 from nameko.timer import timer
-from nameko.runners import ServiceRunner
-from nameko.testing.utils import get_container
-import yaml
+import sys
 import logging
 import logging.config
-# from logger import LoggingDependency
-from config import CONFIG, AMQP_CONFIG, INTERVAL, \
-    CONFIG_URL, ETAG_URL, ETAG_DOC, ETAG_PART_POST_URL,\
-    FETCH_URL
-from couchdb_watch import get_db_rules, get_db_etag, put_db_etag, fetch_url
+from config import INTERVAL, URLS_KEY, AGENT_TYPE, \
+    URLS_CONFIG_URL, URLS_LATEST_URL, URLS_DOC_URL, \
+    FETCH_URL_URL, URLS_DATA
+from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
+    fetch_url, generate_agent_id, generate_urls_data
 try:
     from agents_common.etag_requests import get_etag
+    from agents_common.data_structures_utils import get_value_from_key_index
 except:
     from config import AGENTS_MODULE_PATH
-    import sys
     sys.path.append(AGENTS_MODULE_PATH)
     from agents_common.etag_requests import get_etag
+    from agents_common.data_structures_utils import get_value_from_key_index
 
 
 logging.basicConfig(level=logging.DEBUG)
-with open(CONFIG) as fle:
-    config = yaml.load(fle)
-if "LOGGING" in config:
-    logging.config.dictConfig(config['LOGGING'])
+try:
+    from config import LOGGING
+    logging.config.dictConfig(LOGGING)
+except:
+    print 'No LOGGING configuration found.'
 logger = logging.getLogger(__name__)
 
 class WatchURLService(object):
     name ="watchurl"
-    # logger = LoggingDependency()
 
     @timer(interval=INTERVAL)
     def get_config(self):
-        rules = get_db_rules(CONFIG_URL)
-        logger.debug(rules)
-        self.watch_url(rules)
+        data = get_store_rules(URLS_CONFIG_URL)
+        # TODO: get these keys and overwrite INTERVAL
+        # interval = get_value_from_key_index(data, 'period')
+        # trigger:
+        rules = get_value_from_key_index(data, URLS_KEY)
+        if rules:
+            self.watch_url(rules)
+        else:
+            logger.info('No urls found.')
+            sys.exit()
 
     def watch_url(self, rules):
-        # for rule in rules:
-        # for development only using 1 rule
-            rule = rules[0]
+        # TODO: handle errors
+        for rule in rules:
+        # FIXME: for development only using 1 rule
+            # rule = rules[0]
             url = rule['url']
             # get db etag
-            # logger.debug('requesting etag in db for url %s', url)
-            # get db etag
-            etag_db, last_modified_db = get_db_etag(ETAG_URL % (url, url))
+            etag_store, last_modified_store = get_store_etag(URLS_LATEST_URL %
+                                                             (url, url))
             # get page etag
             etag, last_modified = get_etag(url)
             # compare etags
             # if there weren't any etag in the database, it will be different
             # to the one retrieved from the page and therefore it will also be
             # stored in the database and the content fetched
-            if (etag_db != etag) or (last_modified_db != last_modified):
-                logger.info('the page has been modified')
-                # store etag in db
-                tos_etag_doc = ETAG_DOC % (rule['organization'] + '-' + rule['tool'] + '-' + rule['policy'])
-                tos_etag_post_url = ETAG_PART_POST_URL % tos_etag_doc
+            if (etag_store != etag) or (last_modified_store != last_modified):
+                logger.info('The page has been modified.')
+                agent_id = generate_agent_id(AGENT_TYPE, url, etag,
+                                             last_modified)
+                # store etag in store
+                etag_doc_url = URLS_DOC_URL % (agent_id)
+                urls_data_dict = generate_urls_data(URLS_DATA, AGENT_TYPE, url,
+                                                    etag, last_modified)
                 # TODO: manage conflict when status code 409
-                put_db_etag(tos_etag_post_url, url, etag, last_modified)
-                # fetch_url(FETCH_URL % (url, etag, last_modified))
-                fetch_url(FETCH_URL, url, etag, last_modified)
+                put_store_etag(etag_doc_url, urls_data_dict)
+                logger.debug(urls_data_dict)
+                # TODO: overwrite FETCH_URL_URL
+                r = fetch_url(FETCH_URL_URL, urls_data_dict)
+                if r == 503:
+                    sys.exit()
             else:
-                logger.info('the page has not been modified')
+                logger.info('The page has not been modified.')
 
-def main():
-    logging.basicConfig(level=logging.DEBUG)
-    # with open(CONFIG) as fle:
-    #     config = yaml.load(fle)
-    # if "LOGGING" in config:
-    #     logging.config.dictConfig(config['LOGGING'])
-    # # logger = logging.getLogger('nameko')
-    # # logger = logging.getLogger(__name__)
-    # logging.debug('before start')
-    with open(CONFIG) as fle:
-        config = yaml.load(fle)
-    if "LOGGING" in config:
-        logging.config.dictConfig(config['LOGGING'])
-    logger = logging.getLogger(__name__)
-    logger.debug('before start')
-
-    runner = ServiceRunner(AMQP_CONFIG)
-    runner.add_service(WatchURLService)
-    # runner.add_service(ServiceB)
-    # ``get_container`` will return the container for a particular service
-    container_watchurl = get_container(runner, WatchURLService)
-    # start both services
-    runner.start()
-    logging.debug('stop')
-    # stop both services
-    # runner.stop()
-
-
-if __name__ == '__main__':
-    main()
+# TODO: add main

@@ -48,7 +48,7 @@ def generate_doc_id(agent_type, url, url_path_id=''):
 
 
 def generate_urls_data(agent_type, url, etag, last_modified,
-                       content=''):
+                       content='', xpath=''):
     """
     https://api.openintegrity.org/url/analyse-url-https-guardianproject.info/home-data-usage-and-protection-policies-sha
     data = {
@@ -60,7 +60,8 @@ def generate_urls_data(agent_type, url, etag, last_modified,
            "etag": ""
            "last_modified": "Mon, 13 Jun 2016 19:01:36 GMT"
        },
-       "content": "### Policy/n * blah/n"
+       "content": "### Policy/n * blah/n",
+       "xpath": xpath
     }
     """
     data = {
@@ -72,7 +73,8 @@ def generate_urls_data(agent_type, url, etag, last_modified,
             'etag': etag,
             'last_modified': last_modified
             },
-        'content': content
+        'content': content,
+        'xpath': xpath
         }
     return data
 

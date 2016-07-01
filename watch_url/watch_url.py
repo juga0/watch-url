@@ -67,7 +67,8 @@ class WatchURLService(object):
                 # store etag in store
                 etag_doc_url = URLS_DOC_URL % (doc_id)
                 urls_data_dict = generate_urls_data(AGENT_TYPE, url,
-                                                    etag, last_modified)
+                                                    etag, last_modified,
+                                                    xpath=rule['xpath'])
                 # TODO: manage conflict when status code 409
                 put_store_etag(etag_doc_url, urls_data_dict)
                 logger.debug(urls_data_dict)

@@ -1,0 +1,56 @@
+image: docker:1.10
+
+stages:
+- build
+- release
+- deploy
+# - test
+
+variables:
+  CONTAINER_TEST_IMAGE: docker.iilab.org:5000/openintegrity/watch-url:$CI_BUILD_REF_NAME
+  CONTAINER_RELEASE_IMAGE: docker.iilab.org:5000/openintegrity/watch-url:latest
+
+before_script:
+  - docker login --username cirunner --password $CI_PORTUS_PASSWORD --email admin@iilab.org docker.iilab.org:5000
+
+build:
+  stage: build
+  script:
+    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+  tags:
+    - docker-build
+
+# test1:
+#   stage: test
+#   tags:
+#     - docker-build
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker run $CONTAINER_TEST_IMAGE /script/to/run/tests
+#
+# test2:
+#   stage: test
+#   tags:
+#     - docker-build
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker run $CONTAINER_TEST_IMAGE /script/to/run/another/test
+
+release-image:
+  stage: release
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+  tags:
+    - docker-build
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - ./deploy.sh
+#   only:
+#     - master

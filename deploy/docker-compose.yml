@@ -1,0 +1,85 @@
+lb:
+  ports:
+  - 443:80
+  labels:
+    io.rancher.loadbalancer.ssl.ports: '443'
+    io.rancher.loadbalancer.target.watch-url: watch-url-dev.staging.openintegrity.org:443=80
+    io.rancher.loadbalancer.target.fetch-url: fetch-url.staging.openintegrity.org:443=80
+    io.rancher.loadbalancer.target.analyse-url: analyse-url.staging.openintegrity.org:443=80
+  tty: true
+  image: rancher/load-balancer-service
+  links:
+  - front:front
+  - couchdb:couchdb
+  - couchdb2:couchdb2
+  stdin_open: true
+
+watch-url:
+  image: docker.iilab.org:5000/openintegrity/watch-url:dev
+  env_file: './env'
+  expose:
+    - 80
+  links:
+  - fetch-url:fetch-url
+
+fetch-url:
+  image: docker.iilab.org:5000/openintegrity/fetch-url:dev
+  env_file: './env'
+  expose:
+    - 80
+  links:
+  - analyse-url:analyse-url
+  volumes:
+  - repository-dev:/data
+  volume_driver: convoy-gluster
+
+analyse-url:
+  image: docker.iilab.org:5000/openintegrity/analyse-url:dev
+  env_file: './env'
+  expose:
+    - 80
+  volumes:
+  - repository-dev:/data
+  volume_driver: convoy-gluster
+
+couchdb:
+  image: docker.iilab.org:5000/openintegrity/oii-couchdb
+  expose:
+    - 5984
+
+couchdb2:
+  image: chrisfosterelli/couchdb2
+  expose:
+    - 5984
+
+rabbitmq:
+  image: rabbitmq:3-management
+  hostname: localhost
+  ports:
+    - 5672:5672
+    - 8080:15672
+
+# frontend:
+#   build: ../site/
+#   container_name: site
+#   env_file: './env'
+#   ports:
+#     - 10000:20000
+# api:
+#   build: ../api/
+#   container_name: api
+#   env_file: './env'
+#   ports:
+#     - 10001:20001
+# service1:
+#   build: ../service1/
+#   container_name: service1
+#   env_file: './env'
+#   ports:
+#     - 10002:20002
+# service2:
+#   build: ../service2/
+#   container_name: service2
+#   env_file: './env'
+#   ports:
+#     - 10003:20003

@@ -55,7 +55,7 @@ def generate_urls_data(agent_type, url, etag, last_modified,
        "key": "https://guardianproject.info/home/data-usage-and-protection-policies/",
        "agent_ip": 1.2.3.4
        "agent_type": "watch-url",
-       "timestamp": "20160623T120243Z",
+       "timestamp_measurement": "20160623T120243Z",
        "header": {
            "etag": ""
            "last_modified": "Mon, 13 Jun 2016 19:01:36 GMT"
@@ -68,7 +68,7 @@ def generate_urls_data(agent_type, url, etag, last_modified,
         'key': url,
         'agent_ip':  obtain_public_ip(),
         'agent_type': agent_type,
-        'timestamp': now_timestamp_str_nodashes(),
+        'timestamp_measurement': now_timestamp_str_nodashes(),
         'header': {
             'etag': etag,
             'last_modified': last_modified
@@ -162,7 +162,7 @@ def put_store_etag(url, data):
     "key":"https://www.whispersystems.org/signal/privacy/",
     "agent_ip": "1.2.3.4",
     "agent_type":"watch-url",
-    "timestamp": "20160623T120243Z",
+    "timestamp_measurement": "20160623T120243Z",
     "header":{
         "etag":"",
         "last-modified":"Mon, 13 Jun 2016 19:01:36 GMT"

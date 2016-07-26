@@ -6,7 +6,10 @@ Work in progress...
 
 ### System dependencies
 
-    sudo apt-get install python-dev
+`sudo apt-get install python-dev`
+
+For lxml package:
+ `sudo apt-get install libxml2-dev libxslt1-dev`
 
 ### With virtualenv
 

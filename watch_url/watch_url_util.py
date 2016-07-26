@@ -95,6 +95,7 @@ def get_store(url, json_key=None):
 
 def put_store(url, data, only_status_code=False):
     logger.debug('PUT url %s' % url)
+    # TODO: create database if it doesn't exist
     if isinstance(data, dict):
         r = requests.put(url, json=data)
     else:
@@ -107,9 +108,17 @@ def put_store(url, data, only_status_code=False):
 def post_store(url, data, only_status_code=False):
     logger.debug('POST url %s' % url)
     if isinstance(data, dict):
-        r = requests.post(url, json=data)
+        try:
+            r = requests.post(url, json=data)
+        except ConnectionError as e:
+            logger.error(e)
+            return None
     else:
-        r = requests.post(url, data=data)
+        try:
+            r = requests.post(url, data=data)
+        except ConnectionError as e:
+            logger.error(e)
+            return None
     if only_status_code:
         return r.status_code
     return r

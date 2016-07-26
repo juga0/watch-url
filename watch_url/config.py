@@ -16,25 +16,34 @@ AGENTS_MODULE_PATH = join(ROOT_PROJECT_PATH, AGENTS_MODULE_DIR)
 AGENT_TYPE = 'watch-url'
 # this will be overwroten by the config interval in the store
 INTERVAL = 10
-# URLS_KEY = ['policies', 'urls']
-URLS_KEY = 'config'
+# KEY = ['policies', 'urls']
+KEY = 'config'
 
 # couchdb configuration and urls
 STORE_URL = 'https://staging-store.openintegrity.org'
-URLS_CONFIG_DB = 'config'
-URLS_CONFIG_DOC = 'tos'
-URLS_CONFIG_URL = '/'.join([STORE_URL, URLS_CONFIG_DB, URLS_CONFIG_DOC])
-# URLS_CONFIG_URL = https://staging-store.openintegrity.org/config/tos
+STORE_CONFIG_DB = 'config'
+STORE_CONFIG_DOC = 'tos'
+STORE_CONFIG_URL = '/'.join([STORE_URL, STORE_CONFIG_DB, STORE_CONFIG_DOC])
+# STORE_CONFIG_URL = https://staging-store.openintegrity.org/config/tos
 
-URLS_DB = 'url'
-URLS_LATESTS_VIEW = """_design/url/_view/latest?reduce=true&group_level=2&startkey=["%s"]&endkey=["%s",{}]"""
-URLS_LATEST_URL = '/'.join([STORE_URL, URLS_DB, URLS_LATESTS_VIEW])
-# URLS_LATEST_URL = """https://staging-store.openintegrity.org/url/_design/url/_view/latest?reduce=true&group_level=2&startkey=["%s"]&endkey=["%s",{}]"""
+STORE_DB = '-'.join(AGENT_TYPE.split('-')[1:])
+STORE_LATEST_VIEW = """_design/url/_view/latest?reduce=true&group_level=2&startkey=["%s"]&endkey=["%s",{}]"""
+STORE_LATEST_VIEW_URL = '/'.join([STORE_URL, STORE_DB, STORE_LATEST_VIEW])
+# STORE_LATEST_VIEW_URL = """https://staging-store.openintegrity.org/url/_design/url/_view/latest?reduce=true&group_level=2&startkey=["%s"]&endkey=["%s",{}]"""
 
-URLS_DB_URL = '/'.join([STORE_URL, URLS_DB])
-URLS_DOC_URL = '/'.join([URLS_DB_URL, "%s"])
-# URLS_DOC_URL = "https://staging-store.openintegrity.org/url/analyse-url-84.251.91.165-https-guardianproject.info-home-data-usage-and-protection-policies--etag"
-URLS_DATA = """{
+STORE_DB_URL = '/'.join([STORE_URL, STORE_DB])
+STORE_UPDATE_DOC_URL = '/'.join([STORE_DB_URL, "%s"])
+# STORE_UPDATE_DOC_URL = "https://staging-store.openintegrity.org/url/analyse-url-84.251.91.165-https-guardianproject.info-home-data-usage-and-protection-policies--etag"
+
+
+# fetch_url configuration
+# FIXME: temporal url for development
+# this will be overwroten by the config in the store
+FETCH_PAGE_DOMAIN = 'http://127.0.0.1:8001'
+FETCH_PAGE_NAME = 'fetchurl'
+FETCH_PAGE_URL = '/'.join([FETCH_PAGE_DOMAIN, FETCH_PAGE_NAME])
+
+AGENT_PAYLOAD = """{
     "key": "%(key)",
     "agent_ip": "%(agent_ip)",
     "agent_type": "%(agent_type)",
@@ -45,14 +54,6 @@ URLS_DATA = """{
     "content": "%(content)"
 }"""
 
-
-
-# fetch_url configuration
-# FIXME: temporal url for development
-# this will be overwroten by the config in the store
-FETCH_URL_DOMAIN = 'http://127.0.0.1:8001'
-FETCH_URL_NAME = 'fetchurl'
-FETCH_URL_URL = '/'.join([FETCH_URL_DOMAIN, FETCH_URL_NAME])
 
 # rabbitmq configuration
 AMQP_CONFIG = {'AMQP_URI': 'amqp://guest:guest@localhost'}

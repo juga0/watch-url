@@ -4,9 +4,9 @@ from nameko.timer import timer
 import sys
 import logging
 import logging.config
-from config import INTERVAL, URLS_KEY, AGENT_TYPE, \
-    URLS_CONFIG_URL, URLS_LATEST_URL, URLS_DOC_URL, \
-    FETCH_URL_URL, URLS_DATA
+from config import INTERVAL, KEY, AGENT_TYPE, \
+    STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, STORE_UPDATE_DOC_URL, \
+    FETCH_PAGE_URL, DATA
 from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
     fetch_url, generate_doc_id, generate_urls_data, url_path_id
 try:
@@ -34,11 +34,11 @@ class WatchURLService(object):
     # TODO: use nameko events
     @timer(interval=INTERVAL)
     def get_config(self):
-        data = get_store_rules(URLS_CONFIG_URL)
+        data = get_store_rules(STORE_CONFIG_URL)
         # TODO: get these keys and overwrite INTERVAL
         # interval = get_value_from_key_index(data, 'period')
         # trigger:
-        rules = get_value_from_key_index(data, URLS_KEY)
+        rules = get_value_from_key_index(data, KEY)
         if rules:
             self.watch_url(rules)
         else:
@@ -52,7 +52,7 @@ class WatchURLService(object):
             # rule = rules[0]
             url = rule['url']
             # get db etag
-            etag_store, last_modified_store = get_store_etag(URLS_LATEST_URL %
+            etag_store, last_modified_store = get_store_etag(STORE_LATEST_VIEW_URL %
                                                              (url, url))
             # get page etag
             etag, last_modified = get_etag(url)
@@ -65,16 +65,18 @@ class WatchURLService(object):
                 url_path = url_path_id(etag, last_modified)
                 doc_id = generate_doc_id(AGENT_TYPE, url, url_path)
                 # store etag in store
-                etag_doc_url = URLS_DOC_URL % (doc_id)
+                etag_doc_url = STORE_UPDATE_DOC_URL % (doc_id)
                 urls_data_dict = generate_urls_data(AGENT_TYPE, url,
                                                     etag, last_modified,
                                                     xpath=rule['xpath'])
                 # TODO: manage conflict when status code 409
                 put_store_etag(etag_doc_url, urls_data_dict)
                 logger.debug(urls_data_dict)
-                # TODO: overwrite FETCH_URL_URL
-                r = fetch_url(FETCH_URL_URL, urls_data_dict)
-                if r == 503:
+                # TODO: overwrite FETCH_PAGE_URL
+                r = fetch_url(FETCH_PAGE_URL, urls_data_dict)
+                if r is None or r == 503:
+                    logger.error('There was a problem trying to connect to'
+                                 'to the fetch agent.')
                     sys.exit()
             else:
                 logger.info('The page has not been modified.')

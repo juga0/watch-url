@@ -26,6 +26,7 @@ Check https://virtualenv.pypa.io/en/latest/installation.html or if Debian equal/
     source ~/.virtualenvs/oiienv/bin/activate
 
 #### Install dependencies in virtualenv
+
     git clone https://lab.openintegrity.org/agents/watch-url.git
     cd watch-url
     pip install -r requirements.txt
@@ -46,7 +47,15 @@ create the following environment variables:
     FETCH_PAGE_HOST='fetchhost'
     FETCH_PAGE_PORT='fetchport'
     ```
+Other variable that can be changed in `config.py` or via environment variables:
+ * `STORE_CONFIG_DB` name of the DB where the agents will find their
+   configuration. Default is `config`
+ * `STORE_CONFIG_DOC` name of the document where this agent will find its
+   configuration. For this agent the default is `page-tos-juga`
+ * `STORE_DB` name of the database for this agent. Default is `page-tos-juga`
 
 ## Running
-  cd watch_url
-  nameko run watch_url
+    ```
+    cd watch_url
+    nameko run watch_url
+    ```

@@ -110,13 +110,13 @@ def post_store(url, data, only_status_code=False):
     if isinstance(data, dict):
         try:
             r = requests.post(url, json=data)
-        except ConnectionError as e:
+        except requests.exceptions.ConnectionError as e:
             logger.error(e)
             return None
     else:
         try:
             r = requests.post(url, data=data)
-        except ConnectionError as e:
+        except requests.exceptions.ConnectionError as e:
             logger.error(e)
             return None
     if only_status_code:

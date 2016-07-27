@@ -32,7 +32,20 @@ Check https://virtualenv.pypa.io/en/latest/installation.html or if Debian equal/
 
 ## Configuration
 
-TBD
+To change the host/port in which this agent listen, modify `config.yml` or
+create the environment variables:
+    ```
+    WATCH_PAGE_HOST='watchhost'
+    WATCH_PAGE_PORT='watchport'
+    ```
+and run `set_ip_port.py`
+
+To change the host/port in which the fetch agent listen, modify `config.py` or
+create the following environment variables:
+    ```
+    FETCH_PAGE_HOST='fetchhost'
+    FETCH_PAGE_PORT='fetchport'
+    ```
 
 ## Running
   cd watch_url

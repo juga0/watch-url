@@ -1,22 +1,23 @@
 """watch_url."""
-# from nameko.rpc import rpc, RpcProxy
-from nameko.timer import timer
 import sys
 import logging
 import logging.config
-from config import INTERVAL, KEY, AGENT_TYPE, \
-    STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, STORE_UPDATE_DOC_URL, \
-    FETCH_PAGE_URL, DATA
-from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
-    fetch_url, generate_doc_id, generate_urls_data, url_path_id
+
+from nameko.timer import timer
+
 try:
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
-except:
+except ImportError:
     from config import AGENTS_MODULE_PATH
     sys.path.append(AGENTS_MODULE_PATH)
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
+from config import INTERVAL, KEY, AGENT_TYPE, \
+    STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, STORE_UPDATE_DOC_URL, \
+    FETCH_PAGE_URL, AGENT_PAYLOAD
+from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
+    fetch_url, generate_doc_id, generate_urls_data, url_path_id
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -28,7 +29,7 @@ except:
 logger = logging.getLogger(__name__)
 
 class WatchURLService(object):
-    name ="watchurl"
+    name = "watchurl"
 
     # TODO: handle errors
     # TODO: use nameko events
@@ -48,12 +49,12 @@ class WatchURLService(object):
     def watch_url(self, rules):
         # TODO: handle errors
         for rule in rules:
-        # FIXME: for development only using 1 rule
+            # FIXME: for development only using 1 rule
             # rule = rules[0]
             url = rule['url']
             # get db etag
-            etag_store, last_modified_store = get_store_etag(STORE_LATEST_VIEW_URL %
-                                                             (url, url))
+            etag_store, last_modified_store = \
+                get_store_etag(STORE_LATEST_VIEW_URL % (url, url))
             # get page etag
             etag, last_modified = get_etag(url)
             # compare etags

@@ -59,7 +59,7 @@ if FETCH_PAGE_HOST and FETCH_PAGE_PORT:
     FETCH_PAGE_DOMAIN = ":".join(["http://", FETCH_PAGE_HOST, FETCH_PAGE_PORT])
 else:
     FETCH_PAGE_DOMAIN = 'http://127.0.0.1:8001'
-FETCH_PAGE_NAME = 'fetchpagegithubrepoissues'
+FETCH_PAGE_NAME = 'fetch_page_tos'
 FETCH_PAGE_URL = '/'.join([FETCH_PAGE_DOMAIN, FETCH_PAGE_NAME])
 
 AGENT_PAYLOAD = """{

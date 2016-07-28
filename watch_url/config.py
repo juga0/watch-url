@@ -20,6 +20,7 @@ AGENT_TYPE = 'watch'
 AGENT_NAME = 'page-tos'
 AGENT_SUFFIX = 'juga'
 NAME_SEPARATOR = '-'
+SERVICE_NAME = 'watch_page_tos'
 # this will be overwroten by the config interval in the store
 INTERVAL = 10
 # KEY = ['policies', 'urls']

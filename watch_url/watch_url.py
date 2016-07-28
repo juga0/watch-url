@@ -13,9 +13,11 @@ except ImportError:
     sys.path.append(AGENTS_MODULE_PATH)
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
+
 from config import INTERVAL, KEY, AGENT_TYPE, \
     STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, STORE_UPDATE_DOC_URL, \
     FETCH_PAGE_URL, AGENT_PAYLOAD
+
 from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
     fetch_url, generate_doc_id, generate_urls_data, url_path_id
 
@@ -24,8 +26,8 @@ logging.basicConfig(level=logging.DEBUG)
 try:
     from config import LOGGING
     logging.config.dictConfig(LOGGING)
-except:
-    print 'No LOGGING configuration found.'
+except ImportError:
+    print "Couldn't find LOGGING in config.py"
 logger = logging.getLogger(__name__)
 
 class WatchURLService(object):

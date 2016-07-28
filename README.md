@@ -35,18 +35,18 @@ Check https://virtualenv.pypa.io/en/latest/installation.html or if Debian equal/
 
 To change the host/port in which this agent listen, modify `config.yml` or
 create the environment variables:
-    ```
+
     WATCH_PAGE_HOST='watchhost'
     WATCH_PAGE_PORT='watchport'
-    ```
+
 and run `set_ip_port.py`
 
-To change the host/port in which the fetch agent listen, modify `config.py` or
+To change the host/port in which the watch- agent listen, modify `config.py` or
 create the following environment variables:
-    ```
+
     FETCH_PAGE_HOST='fetchhost'
     FETCH_PAGE_PORT='fetchport'
-    ```
+
 Other variable that can be changed in `config.py` or via environment variables:
  * `STORE_CONFIG_DB` name of the DB where the agents will find their
    configuration. Default is `config`
@@ -55,7 +55,7 @@ Other variable that can be changed in `config.py` or via environment variables:
  * `STORE_DB` name of the database for this agent. Default is `page-tos-juga`
 
 ## Running
-    ```
+
     cd watch_url
     nameko run watch_url
-    ```
+

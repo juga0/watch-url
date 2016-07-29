@@ -82,6 +82,7 @@ def generate_urls_data(agent_type, url, etag, last_modified,
 def get_store(url, json_key=None):
     logger.debug('GET url %s', url)
     r = requests.get(url)
+    logger.info('Reguest GET %s returns %s', url, r.reason)
     try:
         data = r.json()
     except ValueError:
@@ -100,6 +101,7 @@ def put_store(url, data, only_status_code=False):
         r = requests.put(url, json=data)
     else:
         r = requests.put(url, data=data)
+    logger.info('Reguest PUT %s returns %s', url, r.reason)
     if only_status_code:
         return r.status_code
     return r
@@ -133,19 +135,6 @@ def get_store_rules(url, rules_key='config'):
 def get_store_etag(url):
     # TODO: manage conflict when status code 409
     etag = last_modified = ''
-
-    # logger.debug('url %s', url)
-    # r = requests.get(url)
-    # if r.json().get("rows"):
-    #     try:
-    #         etag = r.json()['rows'][0]['value']['header'].get('etag')
-    #         last_modified = r.json()['rows'][0]['value']['header'].get('last-modified')
-    #     except KeyError, IndexError:
-    #         logger.debug('no key etag or/nor last_modified in db')
-    # logger.debug('etag %s', etag)
-    # logger.debug('last-modified %s', last_modified)
-    # return etag, last_modified
-
     rows = get_store(url, 'rows')
     if rows:
         keys_indexes = ['rows', 0, 'value', 'header', 'etag']
@@ -184,6 +173,13 @@ def put_store_etag(url, data):
     # It is recommended that you avoid POST when possible, because proxies and other network intermediaries will occasionally resend POST requests, which can result in duplicate document creation. If your client software is not capable of guaranteeing uniqueness of generated UUIDs, use a GET to /_uuids?count=100 to retrieve a list of document IDs for future PUT requests. Please note that the /_uuids-call does not check for existing document ids; collision-detection happens when you are trying to save a document.
     # FIXME: manage conflict
     return put_store(url, data, only_status_code=True)
+
+
+def post_store_etag(url, data):
+    """
+    Like put_store_etag but using method POST
+    """
+    return post_store(url, data, only_status_code=True)
 
 
 def fetch_url(url, data):

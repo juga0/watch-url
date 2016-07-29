@@ -14,11 +14,11 @@ except ImportError:
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
 
-from config import INTERVAL, KEY, AGENT_TYPE, \
-    STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, STORE_UPDATE_DOC_URL, \
-    FETCH_PAGE_URL, AGENT_PAYLOAD
+from config_common import INTERVAL, KEY, AGENT_PAYLOAD
+from config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, \
+    STORE_UPDATE_DOC_URL, FETCH_PAGE_URL
 
-from watch_url_util import get_store_rules, get_store_etag, put_store_etag, \
+from watch_url_util import get_store_rules, get_store_etag, post_store_etag, \
     fetch_url, generate_doc_id, generate_urls_data, url_path_id
 
 
@@ -29,6 +29,7 @@ try:
 except ImportError:
     print "Couldn't find LOGGING in config.py"
 logger = logging.getLogger(__name__)
+print("logger name %s" % logger.name)
 
 class WatchURLService(object):
     name = "watchurl"
@@ -43,6 +44,7 @@ class WatchURLService(object):
         # trigger:
         rules = get_value_from_key_index(data, KEY)
         if rules:
+            logger.debug('Found %s rules.', len(rules))
             self.watch_url(rules)
         else:
             logger.info('No urls found.')
@@ -51,14 +53,19 @@ class WatchURLService(object):
     def watch_url(self, rules):
         # TODO: handle errors
         for rule in rules:
+            logger.debug('Processing rule with url %s', rule['url'])
             # FIXME: for development only using 1 rule
             # rule = rules[0]
             url = rule['url']
             # get db etag
             etag_store, last_modified_store = \
                 get_store_etag(STORE_LATEST_VIEW_URL % (url, url))
+            logger.debug('Found etag %s and last_modified %s in store',
+                         etag_store, last_modified_store)
             # get page etag
             etag, last_modified = get_etag(url)
+            logger.debug('Found etag %s and last_modified %s in web site',
+                         etag, last_modified)
             # compare etags
             # if there weren't any etag in the database, it will be different
             # to the one retrieved from the page and therefore it will also be
@@ -72,14 +79,16 @@ class WatchURLService(object):
                 urls_data_dict = generate_urls_data(AGENT_TYPE, url,
                                                     etag, last_modified,
                                                     xpath=rule['xpath'])
+                # logger.debug(urls_data_dict)
                 # TODO: manage conflict when status code 409
-                put_store_etag(etag_doc_url, urls_data_dict)
-                logger.debug(urls_data_dict)
+                logger.debug('Saving etag in store.')
+                post_store_etag(etag_doc_url, urls_data_dict)
                 # TODO: overwrite FETCH_PAGE_URL
+                logger.debug('Requesting fetch.')
                 r = fetch_url(FETCH_PAGE_URL, urls_data_dict)
                 if r is None or r == 503:
                     logger.error('There was a problem trying to connect to'
-                                 'to the fetch agent.')
+                                 ' the fetch agent.')
                     sys.exit()
             else:
                 logger.info('The page has not been modified.')

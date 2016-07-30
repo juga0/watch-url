@@ -30,7 +30,8 @@ FS_PATH = join(PROJECT_PATH, 'data')
 # URLs
 ############################
 # couchdb configuration and urls
-STORE_URL = 'https://staging-store.openintegrity.org'
+STORE_URL = environ.get('STORE_URL') or \
+    'https://staging-store.openintegrity.org'
 STORE_CONFIG_DB = environ.get('STORE_CONFIG_DB') or 'config'
 STORE_CONFIG_DOC = environ.get('STORE_CONFIG_DOC') or \
                     NAME_SEPARATOR.join([AGENT_NAME, AGENT_SUFFIX])

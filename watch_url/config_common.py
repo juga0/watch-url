@@ -60,10 +60,10 @@ AMQP_CONFIG = {'AMQP_URI': 'amqp://guest:guest@localhost'}
 # logging configuration
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'formatters': {
         'simple': {
-            'format': "%(levelname)s:%(name)s - %(module)s - %(message)s"
+            'format': "%(levelname)s:%(module)s - %(message)s"
         }
     },
     'handlers': {

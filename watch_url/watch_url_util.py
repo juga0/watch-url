@@ -1,6 +1,7 @@
 """watch_url functions."""
 import requests
 import logging
+from requests.exceptions import ConnectionError
 try:
     from agents_common.scraper_utils import url2filenamedashes, \
         last_modified2timestamp_str, now_timestamp_ISO_8601
@@ -15,12 +16,12 @@ except:
     from agents_common.system_utils import obtain_public_ip
     from agents_common.data_structures_utils import get_value_from_key_index
 
-logging.basicConfig(level=logging.DEBUG)
 try:
     from config_common import LOGGING
     logging.config.dictConfig(LOGGING)
 except:
     print 'No LOGGING configuration found.'
+    logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -109,16 +110,14 @@ def post_store(url, data, only_status_code=False):
     if isinstance(data, dict):
         try:
             r = requests.post(url, json=data)
-        except requests.exceptions.ConnectionError as e:
+        except ConnectionError as e:
             logger.error(e)
-            raise e
             return None
     else:
         try:
             r = requests.post(url, data=data)
-        except requests.exceptions.ConnectionError as e:
+        except ConnectionError as e:
             logger.error(e)
-            raise e
             return None
     logger.info('Request POST %s returned %s', url, r.reason)
     if only_status_code:

@@ -1,9 +1,10 @@
 """watch_url functions."""
 import requests
 import logging
+from requests.exceptions import ConnectionError
 try:
     from agents_common.scraper_utils import url2filenamedashes, \
-        last_modified2timestamp_str, now_timestamp_str_nodashes
+        last_modified2timestamp_str, now_timestamp_ISO_8601
     from agents_common.system_utils import obtain_public_ip
     from agents_common.data_structures_utils import get_value_from_key_index
 except:
@@ -11,16 +12,16 @@ except:
     import sys
     sys.path.append(AGENTS_MODULE_PATH)
     from agents_common.scraper_utils import url2filenamedashes, \
-        last_modified2timestamp_str, now_timestamp_str_nodashes
+        last_modified2timestamp_str, now_timestamp_ISO_8601
     from agents_common.system_utils import obtain_public_ip
     from agents_common.data_structures_utils import get_value_from_key_index
 
-logging.basicConfig(level=logging.DEBUG)
 try:
-    from config import LOGGING
+    from config_common import LOGGING
     logging.config.dictConfig(LOGGING)
 except:
     print 'No LOGGING configuration found.'
+    logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
@@ -47,28 +48,25 @@ def generate_doc_id(agent_type, url, url_path_id=''):
     return doc_id
 
 
-def generate_urls_data(agent_type, url, etag, last_modified,
-                       content='', xpath=''):
+def generate_urls_data(url, agent_type, page_type, etag='', last_modified='',
+                       xpath='', content=''):
     """
-    https://api.openintegrity.org/url/analyse-url-https-guardianproject.info/home-data-usage-and-protection-policies-sha
-    data = {
-       "key": "https://guardianproject.info/home/data-usage-and-protection-policies/",
-       "agent_ip": 1.2.3.4
-       "agent_type": "watch-url",
-       "timestamp_measurement": "20160623T120243Z",
-       "header": {
-           "etag": ""
-           "last_modified": "Mon, 13 Jun 2016 19:01:36 GMT"
-       },
-       "content": "### Policy/n * blah/n",
-       "xpath": xpath
-    }
+    https://staging-store.openintegrity.org/pages-juga/_design/page/_update/timestamped/watch-176.10.104.243-httpsguardianproject.infohomedata-usage-and-protection-policies-
+    data = {'agent_ip': '78.142.19.213',
+     'agent_type': 'watch',
+     'page_type': 'tos',
+     'content': '',
+     'header': {'etag': '', 'last_modified': ''},
+     'key': u'https://guardianproject.info/home/data-usage-and-protection-policies/',
+     'timestamp_measurements': '2016-07-29T23:13:15.511Z',
+     'xpath': '//article'}
     """
     data = {
         'key': url,
         'agent_ip':  obtain_public_ip(),
         'agent_type': agent_type,
-        'timestamp_measurements': now_timestamp_str_nodashes(),
+        'page_type': page_type,
+        'timestamp_measurement': now_timestamp_ISO_8601(),
         'header': {
             'etag': etag,
             'last_modified': last_modified
@@ -108,19 +106,20 @@ def put_store(url, data, only_status_code=False):
 
 
 def post_store(url, data, only_status_code=False):
-    logger.debug('POST url %s' % url)
+    logger.info('POST url %s' % url)
     if isinstance(data, dict):
         try:
             r = requests.post(url, json=data)
-        except requests.exceptions.ConnectionError as e:
+        except ConnectionError as e:
             logger.error(e)
             return None
     else:
         try:
             r = requests.post(url, data=data)
-        except requests.exceptions.ConnectionError as e:
+        except ConnectionError as e:
             logger.error(e)
             return None
+    logger.info('Request POST %s returned %s', url, r.reason)
     if only_status_code:
         return r.status_code
     return r
@@ -179,6 +178,7 @@ def post_store_etag(url, data):
     """
     Like put_store_etag but using method POST
     """
+    logger.info('post_store_etag being called')
     return post_store(url, data, only_status_code=True)
 
 

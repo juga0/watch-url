@@ -24,7 +24,7 @@ from watch_url_util import get_store_rules, get_store_etag, post_store_etag, \
 
 logging.basicConfig(level=logging.DEBUG)
 try:
-    from config import LOGGING
+    from config_common import LOGGING
     logging.config.dictConfig(LOGGING)
 except ImportError:
     print "Couldn't find LOGGING in config.py"
@@ -44,18 +44,22 @@ class WatchURLService(object):
         # trigger:
         rules = get_value_from_key_index(data, KEY)
         if rules:
-            logger.debug('Found %s rules.', len(rules))
+            logger.info('Found %s rules.', len(rules))
             self.watch_url(rules)
+            # for debugging, exit after first rule
+            sys.exit()
         else:
             logger.info('No urls found.')
             sys.exit()
+        sys.exit()
 
     def watch_url(self, rules):
         # TODO: handle errors
-        for rule in rules:
+        # for rule in rules:
+        # FIXME: for development only using 1 rule
+        logger.debug("rule 0 %s", rules[0])
+        for rule in [rules[0]]:
             logger.debug('Processing rule with url %s', rule['url'])
-            # FIXME: for development only using 1 rule
-            # rule = rules[0]
             url = rule['url']
             # get db etag
             etag_store, last_modified_store = \
@@ -76,20 +80,22 @@ class WatchURLService(object):
                 doc_id = generate_doc_id(AGENT_TYPE, url, url_path)
                 # store etag in store
                 etag_doc_url = STORE_UPDATE_DOC_URL % (doc_id)
+                logger.debug('The URL to store the page is %s', etag_doc_url)
                 urls_data_dict = generate_urls_data(AGENT_TYPE, url,
                                                     etag, last_modified,
                                                     xpath=rule['xpath'])
                 # logger.debug(urls_data_dict)
                 # TODO: manage conflict when status code 409
-                logger.debug('Saving etag in store.')
-                post_store_etag(etag_doc_url, urls_data_dict)
-                # TODO: overwrite FETCH_PAGE_URL
-                logger.debug('Requesting fetch.')
-                r = fetch_url(FETCH_PAGE_URL, urls_data_dict)
-                if r is None or r == 503:
-                    logger.error('There was a problem trying to connect to'
-                                 ' the fetch agent.')
-                    sys.exit()
+                logger.info('Saving etag/last_modified in store.')
+                r = post_store_etag(etag_doc_url, urls_data_dict)
+                logger.info('POST store returned %s', r.reason)
+                # logger.debug('Requesting fetch.')
+                # r = fetch_url(FETCH_PAGE_URL, urls_data_dict)
+                # if r is None or r == 503:
+                #     logger.error('There was a problem trying to connect to'
+                #                  ' the fetch agent.')
+                #     sys.exit()
+                # logger.info('Contacting fetch')
             else:
                 logger.info('The page has not been modified.')
             # FIXME: for developing exits here

@@ -17,7 +17,7 @@ except:
 
 logging.basicConfig(level=logging.DEBUG)
 try:
-    from config import LOGGING
+    from config_common import LOGGING
     logging.config.dictConfig(LOGGING)
 except:
     print 'No LOGGING configuration found.'
@@ -108,19 +108,22 @@ def put_store(url, data, only_status_code=False):
 
 
 def post_store(url, data, only_status_code=False):
-    logger.debug('POST url %s' % url)
+    logger.info('POST url %s' % url)
     if isinstance(data, dict):
         try:
             r = requests.post(url, json=data)
         except requests.exceptions.ConnectionError as e:
             logger.error(e)
+            raise e
             return None
     else:
         try:
             r = requests.post(url, data=data)
         except requests.exceptions.ConnectionError as e:
             logger.error(e)
+            raise e
             return None
+    logger.info('Request POST %s returned %s', url, r.reason)
     if only_status_code:
         return r.status_code
     return r
@@ -179,6 +182,7 @@ def post_store_etag(url, data):
     """
     Like put_store_etag but using method POST
     """
+    logger.info('post_store_etag being called')
     return post_store(url, data, only_status_code=True)
 
 

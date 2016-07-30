@@ -10,7 +10,7 @@ AGENT_NAME = 'pages'
 AGENT_SUFFIX = 'juga'
 NAME_SEPARATOR = '-'
 # this will be overwroten by the config interval in the store
-INTERVAL = 10
+INTERVAL = 60
 # KEY = ['policies', 'urls']
 KEY = 'config'
 
@@ -77,6 +77,10 @@ LOGGING = {
     #         'handlers': ['console']
     #     }
         'watch_url': {
+            'level': 'DEBUG',
+            'handlers': ['console']
+        },
+        'watch_url_util': {
             'level': 'DEBUG',
             'handlers': ['console']
         }

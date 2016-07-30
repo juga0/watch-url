@@ -58,5 +58,15 @@ Other variable that can be changed in `config.py` or via environment variables:
 
 ## Running
 
+    watch_url/watch_pages_tos_service.py
+
+or
+
     cd watch_url
-    nameko run watch_url
+    watch_pages_tos_service.py
+
+or
+
+    cd watch_url
+    nameko run watch_url --config config.yaml # if runned in this way,
+    won't take the WATCH* environment variables

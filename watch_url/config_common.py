@@ -55,13 +55,15 @@ AGENT_PAYLOAD = """{
 
 # nameko
 ############################
+CONFIG_YAML_PATH = join(ROOT_PATH, 'config.yaml')
+WEB_SERVER_ADDRESS = '127.0.0.1:8000'
 # rabbitmq configuration
 AMQP_CONFIG = {'AMQP_URI': 'amqp://guest:guest@localhost'}
 
 # logging configuration
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'formatters': {
         'simple': {
             'format': "%(levelname)s:%(module)s - %(message)s"

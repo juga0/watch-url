@@ -4,15 +4,14 @@
 from os.path import join, abspath, dirname
 from os import environ
 
-AGENT_SCOPE = 'tos'
-# AGENT_NAME = 'page-tos'
+PAGE_TYPE = 'tos'
 AGENT_NAME = 'pages'
 AGENT_SUFFIX = 'juga'
 NAME_SEPARATOR = '-'
 # this will be overwroten by the config interval in the store
 INTERVAL = 60
-# KEY = ['policies', 'urls']
-KEY = 'config'
+# CONFIG_DOC_KEY = ['policies', 'urls']
+CONFIG_DOC_KEY = 'config'
 
 # paths
 ############################
@@ -44,11 +43,13 @@ AGENT_PAYLOAD = """{
     "key": "%(key)",
     "agent_ip": "%(agent_ip)",
     "agent_type": "%(agent_type)",
+    "page_type": "%(page_type)",
     "header": {
         "etag": "%(etag)",
         "last-modified": "%(last_modified)"
     },
     "content": "%(content)"
+    "timestamp_measurement": "%(timestamp_measurement)"
 }"""
 
 # nameko

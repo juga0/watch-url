@@ -14,7 +14,7 @@ except ImportError:
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
 
-from config_common import INTERVAL, KEY, AGENT_PAYLOAD
+from config_common import INTERVAL, CONFIG_DOC_KEY, AGENT_PAYLOAD
 from config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, \
     STORE_UPDATE_DOC_URL, FETCH_PAGE_URL
 
@@ -42,7 +42,7 @@ class WatchURLService(object):
         # TODO: get these keys and overwrite INTERVAL
         # interval = get_value_from_key_index(data, 'period')
         # trigger:
-        rules = get_value_from_key_index(data, KEY)
+        rules = get_value_from_key_index(data, CONFIG_DOC_KEY)
         if rules:
             logger.info('Found %s rules.', len(rules))
             self.watch_url(rules)
@@ -74,14 +74,19 @@ class WatchURLService(object):
             # if there weren't any etag in the database, it will be different
             # to the one retrieved from the page and therefore it will also be
             # stored in the database and the content fetched
-            if (etag_store != etag) or (last_modified_store != last_modified):
+            # when the page doesn't have etag nor last_modified, it's stored
+            if (etag_store == etag == '' and
+                        last_modified_store == last_modified == '') or
+                    (etag_store != etag) or
+                    (last_modified_store != last_modified):
                 logger.info('The page has been modified.')
                 url_path = url_path_id(etag, last_modified)
                 doc_id = generate_doc_id(AGENT_TYPE, url, url_path)
                 # store etag in store
                 etag_doc_url = STORE_UPDATE_DOC_URL % (doc_id)
                 logger.debug('The URL to store the page is %s', etag_doc_url)
-                urls_data_dict = generate_urls_data(AGENT_TYPE, url,
+                urls_data_dict = generate_urls_data(url,
+                                                    AGENT_TYPE, PAGE_TYPE,
                                                     etag, last_modified,
                                                     xpath=rule['xpath'])
                 # logger.debug(urls_data_dict)

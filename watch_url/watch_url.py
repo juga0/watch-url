@@ -9,11 +9,20 @@ try:
     from agents_common.etag_requests import get_etag
     from agents_common.data_structures_utils import get_value_from_key_index
 except ImportError:
-    from config import AGENTS_MODULE_PATH
-    sys.path.append(AGENTS_MODULE_PATH)
-    from agents_common.etag_requests import get_etag
-    from agents_common.data_structures_utils import get_value_from_key_index
-
+    print('agents_common is not installed '
+          'or does not contain one of the required modules,'
+          ' trying to find it inside this program path')
+    try:
+        from config import AGENTS_MODULE_PATH
+        sys.path.append(AGENTS_MODULE_PATH)
+        from agents_common.etag_requests import get_etag
+        from agents_common.data_structures_utils import \
+            get_value_from_key_index
+    except ImportError:
+        print('agents_common not found in this program path, '
+              'you need to install it or'
+              ' create a symlink inside this program path')
+        sys.exit()
 from config_common import INTERVAL, CONFIG_DOC_KEY, AGENT_PAYLOAD, PAGE_TYPE
 from config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, \
     STORE_UPDATE_DOC_URL, FETCH_PAGE_URL

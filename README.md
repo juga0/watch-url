@@ -7,9 +7,12 @@ Work in progress...
 ### System dependencies
 
 `sudo apt-get install python-dev`
-
 For lxml package:
  `sudo apt-get install libxml2-dev libxslt1-dev`
+For PyYAML package:
+`sudo apt-get install libyaml-dev`
+For cryptograpy package:
+`sudo apt-get install libffi-dev`
 
 ### With virtualenv
 
@@ -27,7 +30,7 @@ Check https://virtualenv.pypa.io/en/latest/installation.html or if Debian equal/
 
 #### Install dependencies in virtualenv
 
-    git clone https://lab.openintegrity.org/agents/watch-url.git
+    git clone https://meta.openintegrity.org/agents/watch-url.git
     cd watch-url
     pip install -r requirements.txt
 
@@ -41,7 +44,7 @@ create the environment variables:
 
 and run `set_ip_port.py`
 
-To change the host/port in which the watch- agent listen, modify `config.py` or
+To change the host/port in which the fetch- agent listen, modify `config.py` or
 create the following environment variables:
 
     FETCH_PAGE_HOST='127.0.0.1' # 127.0.0.1 is the default

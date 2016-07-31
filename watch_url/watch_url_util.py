@@ -1,4 +1,5 @@
 """watch_url functions."""
+import sys
 import requests
 import logging
 from requests.exceptions import ConnectionError
@@ -7,15 +8,23 @@ try:
         last_modified2timestamp_str, now_timestamp_ISO_8601
     from agents_common.system_utils import obtain_public_ip
     from agents_common.data_structures_utils import get_value_from_key_index
-except:
-    from config import AGENTS_MODULE_PATH
-    import sys
-    sys.path.append(AGENTS_MODULE_PATH)
-    from agents_common.scraper_utils import url2filenamedashes, \
-        last_modified2timestamp_str, now_timestamp_ISO_8601
-    from agents_common.system_utils import obtain_public_ip
-    from agents_common.data_structures_utils import get_value_from_key_index
-
+except ImportError as e:
+    print('agents_common is not installed '
+          'or does not contain one of the required modules,'
+          ' trying to find it inside this program path')
+    try:
+        from config import AGENTS_MODULE_PATH
+        import sys
+        sys.path.append(AGENTS_MODULE_PATH)
+        from agents_common.scraper_utils import url2filenamedashes, \
+            last_modified2timestamp_str, now_timestamp_ISO_8601
+        from agents_common.system_utils import obtain_public_ip
+        from agents_common.data_structures_utils import get_value_from_key_index
+    except ImportError as e:
+        print('agents_common not found in this program path, '
+              'you need to install it or'
+              ' create a symlink inside this program path')
+        sys.exit()
 try:
     from config_common import LOGGING
     logging.config.dictConfig(LOGGING)

@@ -38,11 +38,11 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 setup(
     name='watch_url',
     version=__version__,
-    description='OII watch url agent',
+    description='watch_url...',
     long_description=long_description,
-    # url='https://github.com/juga0/watch-url',
-    url='https://lab.openintegrity.org/agents/watch-url',
-    author=__author__,
+    #url='https://github.com/openintegrity/watch-url',
+    url='https://meta.openintegrity.org/agents/watch-url',
+    author='__author__',
     author_email=__contact__,
     license='GPLv3',
     classifiers=[
@@ -56,11 +56,25 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
     ],
-    keywords='agents OII watch url',
+    keywords='agents watch page tos',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    install_requires=reqs,
+    #   py_modules=["my_module"],
+    # install_requires=reqs,
+    install_requires=['nameko==2.3.1'],
+    dependency_links=['https://meta.openintegrity.org/agents/agents-common-code.git#egg=agents-common'],
     extras_require={
         'dev': ['ipython'],
         'test': ['coverage'],
+        'test': ['pytest'],
+        'test': ['sphinx'],
     },
+    # package_data={
+    #     'watch_url': ['package_data.dat'],
+    # },
+    # data_files=[('my_data', ['data/data_file'])],
+    # entry_points={
+    #     'console_scripts': [
+    #         'watch_url=watch_url:main',
+    #     ],
+    # },
 )

@@ -14,7 +14,6 @@ except ImportError as e:
           ' trying to find it inside this program path')
     try:
         from config import AGENTS_MODULE_PATH
-        import sys
         sys.path.append(AGENTS_MODULE_PATH)
         from agents_common.scraper_utils import url2filenamedashes, \
             last_modified2timestamp_str, now_timestamp_ISO_8601
@@ -25,12 +24,7 @@ except ImportError as e:
               'you need to install it or'
               ' create a symlink inside this program path')
         sys.exit()
-try:
-    from config_common import LOGGING
-    logging.config.dictConfig(LOGGING)
-except:
-    print 'No LOGGING configuration found.'
-    logging.basicConfig(level=logging.DEBUG)
+
 logger = logging.getLogger(__name__)
 
 
@@ -67,7 +61,7 @@ def generate_urls_data(url, agent_type, page_type, etag='', last_modified='',
      'content': '',
      'header': {'etag': '', 'last_modified': ''},
      'key': u'https://guardianproject.info/home/data-usage-and-protection-policies/',
-     'timestamp_measurements': '2016-07-29T23:13:15.511Z',
+     'timestamp_measurement': '2016-07-29T23:13:15.511Z',
      'xpath': '//article'}
     """
     data = {
@@ -90,13 +84,17 @@ def get_store(url, json_key=None):
     logger.debug('GET url %s', url)
     r = requests.get(url)
     logger.info('Reguest GET %s returns %s', url, r.reason)
+    logger.debug('Response: %s', r)
     try:
+        logger.debug('Response content is json.')
         data = r.json()
     except ValueError:
+        logger.debug('Response content is not json')
         return r.text
     if json_key:
-        logger.debug('json key %s', json_key)
+        logger.debug('Searching for json key %s in the response.', json_key)
         value = get_value_from_key_index(data, json_key)
+        logger.debug('The value of the key is %s', value)
         return value
     return data
 
@@ -149,11 +147,17 @@ def get_store_etag(url):
         try:
             etag = get_value_from_key_index(rows, keys_indexes)
         except KeyError, IndexError:
+            logger.debug('etag not found either the document was not stored '
+                         'or the query is wrong.')
             keys_indexes = ['rows', 0, 'value', 'header', 'last_modified']
             try:
                 last_modified = get_value_from_key_index(rows, keys_indexes)
             except KeyError, IndexError:
+                logger.debug('last_modified not found either the document was '
+                             'not stored or the query is wrong.')
                 pass
+    else:
+        logger.error('No content in rows, something must be wrong.')
     return etag, last_modified
 
 def put_store_etag(url, data):

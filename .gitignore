@@ -8,4 +8,4 @@ dist
 data
 .cache
 _design
-*/agents_common
+*agents_common

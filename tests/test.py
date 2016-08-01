@@ -87,3 +87,30 @@ def test_post_update_pages():
     payload = '{"xpath": "//article", "agent_ip": "78.142.19.213", "content": "", "header": {"etag": "", "last_modified": ""}, "agent_type": "watch", "page_type": "tos", "key": "https://guardianproject.info/home/data-usage-and-protection-policies/", "timestamp_measurement": "2016-07-29T23:13:15.511Z"}'
     return_value = 201
     assert return_value == post_store_etag(url_store_update, payload)
+
+
+def test_get_latest_pages_view_url():
+    url = "https://guardianproject.info/home/data-usage-and-protection-policies/"
+    latest_url = 'https://staging-store.openintegrity.org/pages-juga/_design/page/_view/latest?reduce=true&group_level=2&startkey=["https://guardianproject.info/home/data-usage-and-protection-policies/"]&endkey=["https://guardianproject.info/home/data-usage-and-protection-policies/",{}]'
+    assert STORE_LATEST_VIEW_URL % (url, url) == latest_url
+
+
+def test_get_latest_pages_view():
+    url = "https://guardianproject.info/home/data-usage-and-protection-policies/"
+    etag = last_modified = ''
+    etag_store, last_modified_store = \
+        get_store_etag(STORE_LATEST_VIEW_URL % (url, url))
+    assert etag == etag_store
+    assert last_modified == last_modified_store
+
+
+def test_fetch_url():
+    url_fetch = 'http://127.0.0.1:8001/fetch_page_tos'
+    assert FETCH_PAGE_URL == url_fetch
+
+
+def test_post_fetch_url():
+    payload = '{"xpath": "//article", "agent_ip": "78.142.19.213", "content": "", "header": {"etag": "", "last_modified": ""}, "agent_type": "watch", "page_type": "tos", "key": "https://guardianproject.info/home/data-usage-and-protection-policies/", "timestamp_measurement": "2016-07-29T23:13:15.511Z"}'
+    return_value = 200
+    r = fetch_url(FETCH_PAGE_URL, payload)
+    assert return_value == r

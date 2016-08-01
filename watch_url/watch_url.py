@@ -106,13 +106,15 @@ class WatchURLService(object):
                 logger.info('Saving etag/last_modified in store.')
                 r = post_store_etag(etag_doc_url, urls_data_dict)
                 logger.info('POST store returned %s', r)
-                logger.info('Requesting fetch.')
+                # call fetch
+                logger.info('Requesting fetch on %s.', FETCH_PAGE_URL)
+                logger.debug('data %s', urls_data_dict)
                 r = fetch_url(FETCH_PAGE_URL, urls_data_dict)
                 if r is None or r == 503:
                     logger.info('There was a problem trying to connect to'
                                 ' the fetch agent, is it running?.')
                     sys.exit()
-                logger.info('Contacting fetch')
+                logger.info('Sent request to fetch')
             else:
                 logger.info('The page has not been modified.')
             # FIXME: for developing exits after 1st rule

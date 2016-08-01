@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 
 
 class WatchURLService(object):
-    name = AGENT_TYPE + '_' + PAGE_TYPE
+    name = SERICE_NAME
 
     # TODO: handle errors
     # TODO: use nameko events

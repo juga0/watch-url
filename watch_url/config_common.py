@@ -2,7 +2,7 @@
 # urljoin only join with one argument
 # from urlparse import urljoin
 from os.path import join, abspath, dirname
-from os import environ, getpid
+from os import environ
 
 DEBUG = environ.get('DEBUG') or False
 DATA_DIR_DEFAULT = 'data'
@@ -77,7 +77,7 @@ LOGGING = {
                       "%(funcName)s - %(message)s"
         },
         'syslog_like': {
-            # Aug  1 11:22:43 subgraph anacron[5063]: ...
+            # Aug  1 11:22:43 host anacron[5063]: ...
             'format': "%(asctime)s %(name)s[%(process)d]: " \
                       "%(levelname)s - %(message)s",
                       # % {'host': environ.get('HOSTNAME'),

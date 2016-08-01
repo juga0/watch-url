@@ -56,7 +56,7 @@ Other variable that can be changed in `config.py` or via environment variables:
  * `STORE_DB` name of the database for this agent. Default is `pages-juga`
  * `STORE_URL` URL of the store. Default is `
    `https://staging-store.openintegrity.org`
- * `LOG_LEVEL` level of log details in the console. All log levels are stored
+ * `LOG_LEVEL` level of log details in the stderr. All log levels are stored
    in log/watch_url.log.
    Possible values are: `CRITICAL`, `ERROR`, `WARNING`, `INFO`, `DEBUG`
    Default is `ERROR` when `DEBUG` environment variable is `False` or
@@ -77,4 +77,4 @@ or
     cd watch_url
     nameko run watch_url --config config.yaml
     # NOTE that if runned in this way,
-    it won't use the `WATCH_*` environment variables
+    it won't use the `FETCH_*` environment variables

@@ -4,34 +4,37 @@
 from os.path import join, abspath, dirname
 from os import environ
 
+DEBUG = environ.get('DEBUG') or False
+DATA_DIR_DEFAULT = 'data'
+LOG_FILE_DEFAULT = 'log/info.log'
+CONSOLE_LOG_DEFAULT = 'ERROR'
+AGENTS_MODULE_DIR = 'agents-common-code'
+STORE_URL_DEFAULT = 'https://staging-store.openintegrity.org'
+
 PAGE_TYPE = 'tos'
 AGENT_NAME = 'pages'
 AGENT_SUFFIX = 'juga'
 NAME_SEPARATOR = '-'
-# this will be overwroten by the config interval in the store
+# this will be overwritten by the config interval in the store
 INTERVAL = 60
-# CONFIG_DOC_KEY = ['policies', 'urls']
 CONFIG_DOC_KEY = 'config'
 
 # paths
 ############################
 BASE_PATH = abspath(__file__)
-# BASE_PATH = abspath('.')
 ROOT_PATH = dirname(BASE_PATH)
 PROJECT_PATH = dirname(ROOT_PATH)
 ROOT_PROJECT_PATH = dirname(PROJECT_PATH)
 # in case agents-common-code is not installed, the path to it is requered
-AGENTS_MODULE_DIR = 'agents-common-code'
 AGENTS_MODULE_PATH = join(ROOT_PROJECT_PATH, AGENTS_MODULE_DIR)
 
 # fs store
-FS_PATH = join(PROJECT_PATH, 'data')
+FS_PATH = environ.get('FS_PATH') or join(PROJECT_PATH, DATA_DIR_DEFAULT)
 
 # URLs
 ############################
 # couchdb configuration and urls
-STORE_URL = environ.get('STORE_URL') or \
-    'https://staging-store.openintegrity.org'
+STORE_URL = environ.get('STORE_URL') or STORE_URL_DEFAULT
 STORE_CONFIG_DB = environ.get('STORE_CONFIG_DB') or 'config'
 STORE_CONFIG_DOC = environ.get('STORE_CONFIG_DOC') or \
                     NAME_SEPARATOR.join([AGENT_NAME, AGENT_SUFFIX])
@@ -53,14 +56,10 @@ AGENT_PAYLOAD = """{
     "timestamp_measurement": "%(timestamp_measurement)"
 }"""
 
-# nameko
-############################
-CONFIG_YAML_PATH = join(ROOT_PATH, 'config.yaml')
-WEB_SERVER_ADDRESS = '127.0.0.1:8000'
-# rabbitmq configuration
-AMQP_CONFIG = {'AMQP_URI': 'amqp://guest:guest@localhost'}
-
-# logging configuration
+# logging
+LOG_PATH = environ.get('LOG_PATH') or join(PROJECT_PATH, LOG_FILE_DEFAULT)
+LOG_LEVEL = environ.get('LOG_LEVEL') or \
+            ('DEBUG' if DEBUG else CONSOLE_LOG_DEFAULT)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -72,25 +71,60 @@ LOGGING = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'simple'
+            'formatter': 'simple',
+            'level': LOG_LEVEL
+        },
+        "debug_file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": LOG_PATH,
+            "maxBytes": 10485760,
+            "backupCount": 20,
+            "encoding": "utf8"
+        },
+        "info_file_handler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "INFO",
+            "formatter": "simple",
+            "filename": LOG_PATH,
+            "maxBytes": 10485760,
+            "backupCount": 20,
+            "encoding": "utf8"
         }
     },
     'loggers': {
-    #     'nameko': {
-    #         'level': 'DEBUG',
-    #         'handlers': ['console']
-    #     }
-        'watch_url': {
+        'nameko': {
             'level': 'DEBUG',
-            'handlers': ['console']
+            'handlers': ['console', 'info_file_handler']
+        },
+        # uncomment this to get logs only from these modules and comment root
+        # FIXME: see FIXME in root
+        'watch_url': {
+            # DEBUG must be here to catch all possible logs that will get filtered
+            # by the handler
+            'level': 'DEBUG',
+            'handlers': ['console', 'debug_file_handler']
         },
         'watch_url_util': {
             'level': 'DEBUG',
-            'handlers': ['console']
+            'handlers': ['console', 'debug_file_handler']
         }
     },
-    # 'root': {
-    #     'level': 'DEBUG',
-    #     'handlers': ['console']
-    # }
+    'root': {
+        # # DEBUG must be here to catch all possible logs that will get filtered
+        # # by the handler
+        # # FIXME: watch_url* don't log here where this uncommented
+        # # and watch_url* commented
+        # 'level': 'DEBUG',
+        # 'handlers': ['console', 'debug_file_handler']
+    }
 }
+
+# nameko
+############################
+CONFIG_YAML_PATH = join(ROOT_PATH, 'config.yaml')
+WEB_SERVER_ADDRESS = '127.0.0.1:8000'
+# rabbitmq configuration
+# this doesn't have any effect here
+# AMQP_CONFIG = {'AMQP_URI': 'amqp://guest:guest@localhost'}

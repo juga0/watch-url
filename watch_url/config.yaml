@@ -1,26 +1,2 @@
-AMQP_URI: 'amqp://guest:guest@127.0.0.1:4369'
-WEB_SERVER_ADDRESS: '127.0.0.1:8000'
-rpc_exchange: 'nameko-rpc'
-max_workers: 10
-parent_calls_tracked: 10
-
-# LOGGING:
-#     version: 1
-#     disable_existing_loggers: true
-#     formatters:
-#         simple:
-#             format: "%(levelname)s:%(name)s - %(module)s - %(message)s"
-#     handlers:
-#         console:
-#             class: logging.StreamHandler
-#             formatter: simple
-#     loggers:
-#         # nameko:
-#         #     level: DEBUG
-#         #     handlers: [console]
-#         watch_url:
-#             level: DEBUG
-#             handlers: [console]
-#     # root:
-#     #     level: DEBUG
-#     #     handlers: [console]
+{AMQP_URI: 'amqp://guest:guest@127.0.0.1:4369', WEB_SERVER_ADDRESS: '127.0.0.1:8000',
+  max_workers: 10, parent_calls_tracked: 10, rpc_exchange: nameko-rpc}

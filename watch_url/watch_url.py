@@ -30,7 +30,6 @@ from config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, \
 from watch_url_util import get_store_rules, get_store_etag, post_store_etag, \
     fetch_url, generate_doc_id, generate_urls_data, url_path_id
 
-
 try:
     from config_common import LOGGING
     logging.config.dictConfig(LOGGING)
@@ -38,11 +37,10 @@ except ImportError:
     print "Couldn't find LOGGING in config.py"
     logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-print("logger name %s" % logger.name)
 
 
 class WatchURLService(object):
-    name = AGENT_TYPE + PAGE_TYPE
+    name = AGENT_TYPE + '_' + PAGE_TYPE
 
     # TODO: handle errors
     # TODO: use nameko events

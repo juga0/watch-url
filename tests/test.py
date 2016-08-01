@@ -22,12 +22,6 @@ from watch_url.config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL
 from watch_url.watch_url_util import get_store_rules, get_store_etag, post_store_etag, \
     fetch_url, generate_doc_id, generate_urls_data, url_path_id
 
-logging.basicConfig(level=logging.DEBUG)
-try:
-    from watch_url.config_common import LOGGING
-    logging.config.dictConfig(LOGGING)
-except:
-    print 'No LOGGING configuration found.'
 logger = logging.getLogger(__name__)
 
 

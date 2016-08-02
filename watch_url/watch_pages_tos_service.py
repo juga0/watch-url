@@ -10,16 +10,12 @@ from nameko.testing.utils import get_container
 
 from watch_url import WatchURLService
 
-# try:
-#     from config_common import LOGGING, CONFIG_YAML_PATH, WEB_SERVER_ADDRESS
-#     logging.config.dictConfig(LOGGING)
-# except ImportError:
-#     print 'No LOGGING configuration found.'
-#     logging.basicConfig(level=logging.DEBUG)
 from config_common import LOGGING, CONFIG_YAML_PATH, WEB_SERVER_ADDRESS
 logging.config.dictConfig(LOGGING)
 
 logger = logging.getLogger(__name__)
+# print 'LOG LEVEL watch_pages...'
+# print logging.getLevelName(logger.getEffectiveLevel())
 
 def update_config_yaml(config_dict, path):
     WATCH_PAGE_HOST = environ.get('WATCH_PAGE_HOST')
@@ -31,7 +27,7 @@ def update_config_yaml(config_dict, path):
     elif config_dict.get('WEB_SERVER_ADDRESS') is None:
         config_dict['WEB_SERVER_ADDRESS'] = WEB_SERVER_ADDRESS
     with open(path, 'w') as f:
-        s = yaml.dump(config_dict)
+        s = yaml.dump(config_dict, default_flow_style=False, width=float("inf"))
         f.write(s)
     return config_dict
 

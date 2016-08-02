@@ -25,22 +25,21 @@ except ImportError:
         sys.exit()
 from config_common import INTERVAL, CONFIG_DOC_KEY, AGENT_PAYLOAD, PAGE_TYPE
 from config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, \
-    STORE_UPDATE_DOC_URL, FETCH_PAGE_URL
+    STORE_UPDATE_DOC_URL, FETCH_PAGE_URL, SERVICE_NAME
 
 from watch_url_util import get_store_rules, get_store_etag, post_store_etag, \
     fetch_url, generate_doc_id, generate_urls_data, url_path_id
 
-try:
-    from config_common import LOGGING
-    logging.config.dictConfig(LOGGING)
-except ImportError:
-    print "Couldn't find LOGGING in config.py"
-    logging.basicConfig(level=logging.DEBUG)
+from config_common import LOGGING
+logging.config.dictConfig(LOGGING)
+
 logger = logging.getLogger(__name__)
+# print 'LOG LEVEL watch_url..'
+# print logging.getLevelName(logger.getEffectiveLevel())
 
 
 class WatchURLService(object):
-    name = SERICE_NAME
+    name = SERVICE_NAME
 
     # TODO: handle errors
     # TODO: use nameko events

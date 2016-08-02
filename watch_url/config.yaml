@@ -1,2 +1,5 @@
-{AMQP_URI: 'amqp://guest:guest@127.0.0.1:4369', WEB_SERVER_ADDRESS: '127.0.0.1:8000',
-  max_workers: 10, parent_calls_tracked: 10, rpc_exchange: nameko-rpc}
+AMQP_URI: amqp://guest:guest@127.0.0.1:4369
+WEB_SERVER_ADDRESS: 127.0.0.1:8000
+max_workers: 10
+parent_calls_tracked: 10
+rpc_exchange: nameko-rpc

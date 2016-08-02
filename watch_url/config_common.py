@@ -134,12 +134,12 @@ LOGGING = {
                          'debug_file_handler']
         }
     },
-    'root': {
-        # # DEBUG must be here to catch all possible logs
-        # # that will get filtered by the handler
-        # 'level': 'DEBUG',
-        # 'handlers': ['console', 'debug_file_handler']
-    }
+    # 'root': {
+    #     # DEBUG must be here to catch all possible logs
+    #     # that will get filtered by the handler
+    #     'level': 'DEBUG',
+    #     'handlers': ['console', 'debug_file_handler']
+    # }
 }
 
 # nameko

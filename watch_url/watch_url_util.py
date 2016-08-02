@@ -26,6 +26,8 @@ except ImportError as e:
         sys.exit()
 
 logger = logging.getLogger(__name__)
+# print 'LOG LEVEL watch_url_utils...'
+# print logging.getLevelName(logger.getEffectiveLevel())
 
 
 def url_path_id(etag=None, last_modified=None):

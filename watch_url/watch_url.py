@@ -23,7 +23,8 @@ except ImportError:
               'you need to install it or'
               ' create a symlink inside this program path')
         sys.exit()
-from config_common import INTERVAL, CONFIG_DOC_KEY, AGENT_PAYLOAD, PAGE_TYPE
+from config_common import INTERVAL, CONFIG_DOC_KEY, AGENT_PAYLOAD, PAGE_TYPE, \
+    AGENT_ATTRIBUTE
 from config import AGENT_TYPE, STORE_CONFIG_URL, STORE_LATEST_VIEW_URL, \
     STORE_UPDATE_DOC_URL, FETCH_PAGE_URL, SERVICE_NAME
 
@@ -70,7 +71,7 @@ class WatchURLService(object):
             url = rule['url']
             # get db etag
             etag_store, last_modified_store = \
-                get_store_etag(STORE_LATEST_VIEW_URL % (url, url))
+                get_store_etag(STORE_LATEST_VIEW_URL % (url,))
             logger.debug('Etag value in store is %s and last_modified is %s',
                          etag_store, last_modified_store)
             # get page etag

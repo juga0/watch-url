@@ -45,24 +45,43 @@ STORE_CONFIG_URL = '/'.join([STORE_URL, STORE_CONFIG_DB, STORE_CONFIG_DOC])
 
 # data
 ############################
+# this is the schema used by in analyse
+# AGENT_PAYLOAD = """{
+#     "entity": "%(entity)",
+#     "attribute": "page/content",
+#     "value": {
+#         "header": {
+#             "etag": "%(etag)",
+#             "last-modified": "%(last_modified)"
+#         },
+#         "content": "%(content)",
+#         "sha256_html": "%(sha256_html)",
+#         "sha256_md": "%(sha256_md)"
+#     },
+#     "context": {
+#         "timestamp_measurement": "%(timestamp_measurement)",
+#         "agent_type": "%(agent_type)",
+#         "agent_ip": "%(agent_ip)",
+#         "page_type": "%(page_type)",
+#         "xpath": "%(xpath)"
+#     }
+# }"""
+# this is the schema used by watch
 AGENT_PAYLOAD = """{
-    "entity": "%(entity)",
+    "entity": "%(entity)s",
     "attribute": "page/content",
     "value": {
         "header": {
-            "etag": "%(etag)",
-            "last-modified": "%(last_modified)"
-        },
-        "content": "%(content)",
-        "sha256_html": "%(sha256_html)",
-        "sha256_md": "%(sha256_md)"
+            "etag": "%(etag)s",
+            "last-modified": "%(last_modified)s"
+        }
     },
     "context": {
-        "timestamp_measurement": "%(timestamp_measurement)",
-        "agent_type": "%(agent_type)",
-        "agent_ip": "%(agent_ip)",
-        "page_type": "%(page_type)",
-        "xpath": "%(xpath)"
+        "timestamp_measurement": "%(timestamp_measurement)s",
+        "agent_type": "%(agent_type)s",
+        "agent_ip": "%(agent_ip)s",
+        "page_type": "%(page_type)s",
+        "xpath": "%(xpath)s"
     }
 }"""
 

@@ -97,7 +97,8 @@ class WatchURLService(object):
                 urls_data_dict = generate_urls_data(url,
                                                     AGENT_TYPE, PAGE_TYPE,
                                                     etag, last_modified,
-                                                    xpath=rule['xpath'])
+                                                    xpath=rule['xpath'],
+                                                    attribute=AGENT_ATTRIBUTE)
                 # logger.debug(urls_data_dict)
                 # TODO: manage conflict when status code 409
                 logger.info('Saving etag/last_modified in store.')

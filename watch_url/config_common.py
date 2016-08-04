@@ -19,6 +19,7 @@ NAME_SEPARATOR = '-'
 # this will be overwritten by the config interval in the store
 INTERVAL = 60
 CONFIG_DOC_KEY = 'config'
+AGENT_ATTRIBUTE = 'page/content'
 
 # paths
 ############################
@@ -45,16 +46,24 @@ STORE_CONFIG_URL = '/'.join([STORE_URL, STORE_CONFIG_DB, STORE_CONFIG_DOC])
 # data
 ############################
 AGENT_PAYLOAD = """{
-    "key": "%(key)",
-    "agent_ip": "%(agent_ip)",
-    "agent_type": "%(agent_type)",
-    "page_type": "%(page_type)",
-    "header": {
-        "etag": "%(etag)",
-        "last-modified": "%(last_modified)"
+    "entity": "%(entity)",
+    "attribute": "page/content",
+    "value": {
+        "header": {
+            "etag": "%(etag)",
+            "last-modified": "%(last_modified)"
+        },
+        "content": "%(content)",
+        "sha256_html": "%(sha256_html)",
+        "sha256_md": "%(sha256_md)"
     },
-    "content": "%(content)"
-    "timestamp_measurement": "%(timestamp_measurement)"
+    "context": {
+        "timestamp_measurement": "%(timestamp_measurement)",
+        "agent_type": "%(agent_type)",
+        "agent_ip": "%(agent_ip)",
+        "page_type": "%(page_type)",
+        "xpath": "%(xpath)"
+    }
 }"""
 
 # logging

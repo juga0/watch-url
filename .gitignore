@@ -9,3 +9,7 @@ data
 .cache
 _design
 *agents_common
+doc
+htmlcov
+.coverage
+

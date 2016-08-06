@@ -25,6 +25,8 @@ except ImportError as e:
               ' create a symlink inside this program path')
         sys.exit()
 
+from config_common import AGENT_PAYLOAD, AGENT_ATTRIBUTE
+
 logger = logging.getLogger(__name__)
 # print 'LOG LEVEL watch_url_utils...'
 # print logging.getLevelName(logger.getEffectiveLevel())
@@ -54,7 +56,7 @@ def generate_doc_id(agent_type, url, url_path_id=''):
 
 
 def generate_urls_data(url, agent_type, page_type, etag='', last_modified='',
-                       xpath='', content=''):
+                       xpath='', content='', attribute=AGENT_ATTRIBUTE, ):
     """
     https://staging-store.openintegrity.org/pages-juga/_design/page/_update/timestamped/watch-176.10.104.243-httpsguardianproject.infohomedata-usage-and-protection-policies-
     data = {'agent_ip': '78.142.19.213',
@@ -65,20 +67,58 @@ def generate_urls_data(url, agent_type, page_type, etag='', last_modified='',
      'key': u'https://guardianproject.info/home/data-usage-and-protection-policies/',
      'timestamp_measurement': '2016-07-29T23:13:15.511Z',
      'xpath': '//article'}
+
+    new schema:
+
+     {
+         "entity": "%(entity)",
+         "attribute": "page/content",
+         "value": {
+             "header": {
+                 "etag": "%(etag)",
+                 "last-modified": "%(last_modified)"
+             },
+             "content": "%(content)",
+             "sha256_html": "%(sha256_html)",
+             "sha256_md": "%(sha256_md)"
+         },
+         "context": {
+             "timestamp_measurement": "%(timestamp_measurement)",
+             "agent_type": "%(agent_type)",
+             "agent_ip": "%(agent_ip)",
+             "page_type": "%(page_type)",
+             "xpath": "%(xpath)"
+         }
+     }
     """
-    data = {
-        'key': url,
+    # data = {
+    #     'entity': url,
+    #     'attribute': attribute,
+    #     'value': {
+    #         'header': {
+    #             'etag': etag,
+    #             'last_modified': last_modified
+    #             }
+    #         },
+    #     "context": {
+    #         'agent_ip':  obtain_public_ip(),
+    #         'agent_type': agent_type,
+    #         'page_type': page_type,
+    #         'timestamp_measurement': now_timestamp_ISO_8601(),
+    #         'xpath': xpath
+    #         }
+    #     }
+    data = AGENT_PAYLOAD % {
+        'entity': url,
+        'attribute': attribute,
+        'etag': etag,
+        'last_modified': last_modified,
         'agent_ip':  obtain_public_ip(),
         'agent_type': agent_type,
         'page_type': page_type,
         'timestamp_measurement': now_timestamp_ISO_8601(),
-        'header': {
-            'etag': etag,
-            'last_modified': last_modified
-            },
-        'content': content,
         'xpath': xpath
-        }
+    }
     return data
 
 

@@ -42,6 +42,8 @@ def get_config_yaml(path):
 def main():
     config_dict = get_config_yaml(CONFIG_YAML_PATH)
     c = update_config_yaml(config_dict, CONFIG_YAML_PATH)
+    wus = WatchURLService()
+    wus.get_config()
     runner = ServiceRunner(c)
     runner.add_service(WatchURLService)
     # container_a = get_container(runner, WatchURLService)

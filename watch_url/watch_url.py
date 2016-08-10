@@ -71,7 +71,7 @@ class WatchURLService(object):
             url = rule['url']
             # get db etag
             etag_store, last_modified_store = \
-                get_store_etag(STORE_LATEST_VIEW_URL % (url,))
+                get_store_etag(STORE_LATEST_VIEW_URL % (url, url))
             logger.debug('Etag value in store is %s and last_modified is %s',
                          etag_store, last_modified_store)
             # get page etag

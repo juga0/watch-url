@@ -185,13 +185,13 @@ def get_store_etag(url):
     etag = last_modified = ''
     rows = get_store(url, 'rows')
     if rows:
-        keys_indexes = ['rows', 0, 'value', 'header', 'etag']
+        keys_indexes = [0, 'value', 'header', 'etag']
         try:
             etag = get_value_from_key_index(rows, keys_indexes)
         except KeyError, IndexError:
             logger.debug('etag not found either the document was not stored '
                          'or the query is wrong.')
-            keys_indexes = ['rows', 0, 'value', 'header', 'last_modified']
+            keys_indexes = [0, 'value', 'header', 'last_modified']
             try:
                 last_modified = get_value_from_key_index(rows, keys_indexes)
             except KeyError, IndexError:
